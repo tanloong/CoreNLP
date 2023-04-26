@@ -432,6 +432,14 @@ public class IndexedWord implements AbstractCoreLabel, Comparable<IndexedWord>  
     if (copyCount() != otherWord.copyCount()) {
       return false;
     }
+
+    // compare empty word index
+    Integer myEmptyIndex = get(CoreAnnotations.EmptyIndexAnnotation.class);
+    Integer otherEmptyIndex = otherWord.get(CoreAnnotations.EmptyIndexAnnotation.class);
+    if ( ! Objects.equals(myEmptyIndex, otherEmptyIndex)) {
+      return false;
+    }
+
     // Compare pseudo-positions
     if ( (!Double.isNaN(this.pseudoPosition) || !Double.isNaN(otherWord.pseudoPosition)) &&
          this.pseudoPosition != otherWord.pseudoPosition) {
@@ -464,6 +472,10 @@ public class IndexedWord implements AbstractCoreLabel, Comparable<IndexedWord>  
     if (containsKey(CoreAnnotations.IndexAnnotation.class)) {
       result = 29 * result + get(CoreAnnotations.IndexAnnotation.class).hashCode();
       sensible = true;
+    }
+    Integer emptyIndex = get(CoreAnnotations.EmptyIndexAnnotation.class);
+    if (emptyIndex != null) {
+      result = 29 * result + emptyIndex.hashCode();
     }
     if ( ! sensible) {
       log.info("WARNING!!!  You have hashed an IndexedWord with no docID, sentIndex or wordIndex. You will almost certainly lose");
